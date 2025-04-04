@@ -1,7 +1,6 @@
 const bcrypt = require("bcryptjs");
 const UserModel = require("../models/clientModel");
-const {generateAccessToken} = require("../../utils/tokens");
-const {generateRefreshToken} = require("../../utils/tokens");
+const generateAccessToken = require("../../utils/tokens");
 const OTPModel = require("../models/otpModel"); 
 const otpGenerator = require("otp-generator");
 const { sendOTP } = require("../../utils/email");
@@ -36,6 +35,7 @@ exports.generateOTP = async (req, res)=>{
 
     // 🗑️ Supprimer l'ancien OTP et enregistrer le nouveau
     await OTPModel.findOneAndDelete({ email });
+    await OTPModel.deleteMany({ email }); 
     const newOTP = await OTPModel.create({ email, otp: hashedOTP, expiresAt: Date.now() + 5 * 60 * 1000 });
 
     console.log("OTP sauvegardé en base de données:", newOTP); // 🛠️ Debugging
@@ -65,7 +65,7 @@ exports.verifyOTP = async (req, res) => {
     }
 
     // Vérifier si l'OTP est expiré
-    if (Date.now() >otpRecord.expiresAt){
+    if (Date.now() > otpRecord.expiresAt){
       await OTPModel.deleteOne({ email });
       return res.status(400).json({ msg: "OTP expiré" });
     }
@@ -96,4 +96,7 @@ exports.verifyOTP = async (req, res) => {
     res.status(500).json({ msg: "Erreur serveur" });
   }
 };
+
+
+
 

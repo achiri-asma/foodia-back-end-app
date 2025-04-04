@@ -3,7 +3,9 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const morgan = require('morgan');
 const connectDB = require('./config/database');
-const clientRoutes = require('./client/routes/clientRoutes')
+const clientRoutes = require('./client/routes/clientRoutes');
+
+
 dotenv.config();
 const app = express();
 

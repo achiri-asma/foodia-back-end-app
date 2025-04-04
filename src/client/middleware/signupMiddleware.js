@@ -3,7 +3,7 @@ const Client = require("../models/clientModel"); // Modèle Client
 const otpGenerator = require("otp-generator");
 const { sendOTP } = require("../../utils/email");
 const OTPModel = require("../models/otpModel"); // Modèle pour stocker les OTP
-
+const crypto = require("crypto");
 
 exports.signupMiddleware = async (req, res) => {
   try {
@@ -28,12 +28,15 @@ exports.signupMiddleware = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedMotpasse = await bcrypt.hash(motpasse, salt);
 
+    const uniqueCode = crypto.randomBytes(6).toString("hex");  
+    const dynamicLink = `https://foodia-app.com/invite/${uniqueCode}`; 
     // Créer un nouveau client
     const client = new Client({
       nom,
       prenom,
       email,
       motpasse: hashedMotpasse,
+      link:dynamicLink,
     });
 
     // Sauvegarder le client

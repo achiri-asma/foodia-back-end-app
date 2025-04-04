@@ -23,7 +23,6 @@ const clientSchema = new mongoose.Schema(
     },
     motpasse:{
       type: String,
-      required: true,
       minlength: 8,
     },
   
@@ -41,9 +40,6 @@ const clientSchema = new mongoose.Schema(
     },
     longitude: {
       type: Number, 
-    },
-    latitude: {
-      type: Number,
     },
     latitude: {
       type: Number,
